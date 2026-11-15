@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Layout from "./components/Layout.jsx";
+import Layout from "./components/layout.jsx";
 import Explore from "./pages/Explore.jsx";
 import Details from "./pages/Details.jsx";
-import { experiences } from "./data/experiences.js";
+import { experiences } from "./data/experience.js";
 export default function App() {
   const [cart, setCart] = useState([]);
   function add(item) {

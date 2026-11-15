@@ -3,9 +3,26 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./components/layout.jsx";
 import Explore from "./pages/Explore.jsx";
 import Details from "./pages/Details.jsx";
+import Plan from "./pages/Plan.jsx";
+import { Confirmation } from "./pages/info.jsx";
+import { validateQuantity } from "./rules/booking.js";
 import { experiences } from "./data/experience.js";
 export default function App() {
   const [cart, setCart] = useState([]);
+  const [form, setForm] = useState({
+    name: "", email: "", age: "", pickup: "self", accepted: false,
+  });
+  const [booking, setBooking] = useState(null);
+  function changeQuantity(id, quantity) {
+    const item = experiences.find(item => item.id === id);
+    if (!item || !validateQuantity(quantity, item.seats).valid) return;
+    setCart(prev => prev.map(line => line.id === id ? { ...line, quantity } : line));
+  }
+  function completeBooking(result) {
+    setBooking(result);
+    setCart([]);
+    setForm({ name: "", email: "", age: "", pickup: "self", accepted: false });
+  }
   function add(item) {
     setCart(prev => {
       const found = prev.find(line => line.id === item.id);
@@ -20,12 +37,16 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Explore items={experiences} cart={cart} onAdd={add}/>} />
         <Route path="/experiences/:id" element={<Details items={experiences} cart={cart} onAdd={add}/>} />
-        <Route path="/plan" element={<div className="wrap"><h1 tabIndex="-1">Your plan</h1>
-          {cart.length === 0 ? <p>Add an experience first.</p> : <ul>{cart.map(line =>
-            <li key={line.id}>{experiences.find(item => item.id === line.id)?.title} × {line.quantity}
-              <button onClick={() => setCart(prev => prev.filter(item => item.id !== line.id))}>Remove</button>
-            </li>)}</ul>}
-          <p>Full booking form is the next milestone.</p></div>} />
+        <Route path="/plan" element={<Plan
+          items={experiences}
+          cart={cart}
+          onQuantity={changeQuantity}
+          onRemove={id => setCart(prev => prev.filter(line => line.id !== id))}
+          form={form}
+          setForm={setForm}
+          onComplete={completeBooking}
+        />} />
+        <Route path="/confirmation" element={<Confirmation booking={booking} />} />
         <Route path="*" element={<div className="wrap"><h1 tabIndex="-1">Page not implemented yet</h1></div>} />
       </Routes>
     </Layout>

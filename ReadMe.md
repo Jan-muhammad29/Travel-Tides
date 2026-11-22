@@ -1,6 +1,8 @@
 # Trail & Tide
 
-
+Name :`Jan Muhammad `
+roll no :`24i-2051`
+section : `cyber-B`
 
 - GitHub repository: `https://github.com/Jan-muhammad29/Travel-Tides.git`
 - Vercel deployment: `https://travel-tides-fayyaz10.vercel.app/`
